@@ -1,4 +1,5 @@
 /**
+ * @flow
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -8,17 +9,25 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import { compose, withHandlers } from 'recompose';
 import history from '../../history';
+import type { LinkProps } from './typings';
 
-function isLeftClickEvent(event) {
+export type LinkInnerProps = LinkProps&{
+  handleClick: Function,
+};
+
+const isLeftClickEvent: Function = (event: Event): boolean => {
+  console.log('event', event);
   return event.button === 0;
-}
+};
 
-function isModifiedEvent(event) {
+const isModifiedEvent: Function = (event: Event): boolean => {
+  console.log('ismodifiedEvent', event);
   return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
-}
+};
 
+/*
 class Link extends React.Component {
   static propTypes = {
     to: PropTypes.string.isRequired,
@@ -48,6 +57,7 @@ class Link extends React.Component {
   };
 
   render() {
+    console.log('salut thomas', this.props);
     const { to, children, ...props } = this.props;
     return (
       <a href={to} {...props} onClick={this.handleClick}>
@@ -56,5 +66,40 @@ class Link extends React.Component {
     );
   }
 }
+*/
 
-export default Link;
+const Link = ({
+  to,
+  children,
+  onClick,
+  handleClick,
+  ...props,
+}: LinkProps): React.Element<any> => {
+
+  return (
+    <a href={to} {props} onClick={handleClick}>
+      {children}
+    </a>
+  );
+};
+
+export default compose(
+  withHandlers({
+    handleClick: (props: LinkProps) => (event: Event): void => {
+      if (props.onClick) {
+        props.onClick(event);
+      }
+
+      if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
+        return;
+      }
+
+      if (event.defaultPrevented === true) {
+        return;
+      }
+
+      event.preventDefault();
+      history.push(props.to);
+    },
+  }),
+)(Link);
