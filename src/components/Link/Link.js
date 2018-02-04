@@ -10,96 +10,49 @@
 
 import React from 'react';
 import { compose, withHandlers } from 'recompose';
+import lodash from 'lodash';
 import history from '../../history';
 import type { LinkProps } from './typings';
 
-export type LinkInnerProps = LinkProps&{
+export type LinkInnerProps = LinkProps & {
   handleClick: Function,
 };
 
-const isLeftClickEvent: Function = (event: Event): boolean => {
-  console.log('event', event);
-  return event.button === 0;
-};
+const firstNames: Array<string> = ['toma', 'asako', 'lia', 'christoph'];
 
-const isModifiedEvent: Function = (event: Event): boolean => {
-  console.log('ismodifiedEvent', event);
-  return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
-};
+const testImport: Array<string> = lodash.shuffle(firstNames);
 
-/*
-class Link extends React.Component {
-  static propTypes = {
-    to: PropTypes.string.isRequired,
-    children: PropTypes.node.isRequired,
-    onClick: PropTypes.func,
-  };
+const isLeftClickEvent: Function = (event: Object): boolean =>
+  event.button === 0;
 
-  static defaultProps = {
-    onClick: null,
-  };
+const isModifiedEvent: Function = (event: Object): boolean =>
+  !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 
-  handleClick = event => {
-    if (this.props.onClick) {
-      this.props.onClick(event);
-    }
-
-    if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
-      return;
-    }
-
-    if (event.defaultPrevented === true) {
-      return;
-    }
-
-    event.preventDefault();
-    history.push(this.props.to);
-  };
-
-  render() {
-    console.log('salut thomas', this.props);
-    const { to, children, ...props } = this.props;
-    return (
-      <a href={to} {...props} onClick={this.handleClick}>
-        {children}
-      </a>
-    );
-  }
-}
-*/
-
-const Link = ({
+const Link: Function = ({
   to,
   children,
-  onClick,
   handleClick,
-  ...props,
-}: LinkProps): React.Element<any> => {
+  className,
+}: LinkInnerProps): React$Element<any> => (
+  <a href={to} className={className} onClick={handleClick}>
+    {children}
+  </a>
+);
 
-  return (
-    <a href={to} {props} onClick={handleClick}>
-      {children}
-    </a>
-  );
-};
+const withExtendedHandlers: Function = withHandlers({
+  handleClick: (props: LinkInnerProps): Function => (event: Event): void => {
+    if (props.onClick) {
+      props.onClick(event);
+    }
 
-export default compose(
-  withHandlers({
-    handleClick: (props: LinkProps) => (event: Event): void => {
-      if (props.onClick) {
-        props.onClick(event);
-      }
-
-      if (isModifiedEvent(event) || !isLeftClickEvent(event)) {
-        return;
-      }
-
-      if (event.defaultPrevented === true) {
-        return;
-      }
-
+    if (
+      event.defaultPrevented === false ||
+      (!isModifiedEvent(event) || isLeftClickEvent(event))
+    ) {
       event.preventDefault();
       history.push(props.to);
-    },
-  }),
-)(Link);
+    }
+  },
+});
+
+export default compose(withExtendedHandlers)(Link);

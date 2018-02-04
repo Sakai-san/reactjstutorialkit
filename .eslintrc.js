@@ -36,16 +36,14 @@ module.exports = {
     'flowtype/require-variable-type': [
       2,
       {
-        "excludeVariableMatch": "^_"
-      }
+        excludeVariableMatch: '^_',
+      },
     ],
     'flowtype/require-parameter-type': 2,
     'flowtype/require-return-type': [
       2,
       'always',
-      {
-        'annotateUndefined': 'never'
-      }
+      { annotateUndefined: 'always' },
     ],
 
     // Forbid the use of extraneous packages

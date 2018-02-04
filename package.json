@@ -21,6 +21,7 @@
     "history": "^4.7.2",
     "isomorphic-style-loader": "^4.0.0",
     "jsonwebtoken": "^8.1.0",
+    "lodash": "^4.17.5",
     "node-fetch": "^1.7.3",
     "normalize.css": "^7.0.0",
     "passport": "^0.4.0",
@@ -121,7 +122,7 @@
     "*.{css,less,styl,scss,sass,sss}": ["stylelint --fix", "git add --force"]
   },
   "scripts": {
-    "precommit": "lint-staged",
+
     "lint-js": "eslint --ignore-path .gitignore --ignore-pattern \"!**/.*\" .",
     "lint-css": "stylelint \"src/**/*.{css,less,styl,scss,sass,sss}\"",
     "lint": "yarn run lint-js && yarn run lint-css",
