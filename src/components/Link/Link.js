@@ -10,17 +10,12 @@
 
 import React from 'react';
 import { compose, withHandlers } from 'recompose';
-import lodash from 'lodash';
 import history from '../../history';
 import type { LinkProps } from './typings';
 
 export type LinkInnerProps = LinkProps & {
   handleClick: Function,
 };
-
-const firstNames: Array<string> = ['toma', 'asako', 'lia', 'christoph'];
-
-const testImport: Array<string> = lodash.shuffle(firstNames);
 
 const isLeftClickEvent: Function = (event: Object): boolean =>
   event.button === 0;
