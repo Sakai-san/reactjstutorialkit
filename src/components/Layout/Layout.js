@@ -1,4 +1,5 @@
 /**
+ * @flow
  * React Starter Kit (https://www.reactstarterkit.com/)
  *
  * Copyright © 2014-present Kriasoft, LLC. All rights reserved.
@@ -24,6 +25,7 @@ class Layout extends React.Component {
   };
 
   render() {
+    console.log('children', this.props.children);
     return (
       <div>
         <Header />

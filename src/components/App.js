@@ -10,6 +10,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import allReducers from '../reducers/index';
+
 const ContextType = {
   // Enables critical path CSS rendering
   // https://github.com/kriasoft/isomorphic-style-loader
@@ -50,6 +56,20 @@ class App extends React.PureComponent {
 
   static childContextTypes = ContextType;
 
+  componentDidMount() {
+    if (this.props.pictures.length === 0) {
+      fetch(
+        'http://studybyyourself.com/wp-admin/admin-ajax.php?action=get_pictures',
+      )
+        .then(response => response.json())
+        .then(r => {
+          if (r.success) {
+            this.props.populatePictures(r.data);
+          }
+        });
+    }
+  }
+
   getChildContext() {
     return this.props.context;
   }
@@ -61,4 +81,18 @@ class App extends React.PureComponent {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return { pictures: state.pictures };
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({ populatePictures }, dispatch);
+}
+
+const store = createStore(allReducers);
+
+export default (
+  <Provider store={store}>
+    connect(mapStateToProps, matchDispatchToProps)(App)
+  </Provider>
+);
